@@ -117,7 +117,9 @@ def process_image(img: Image.Image, model_name: str, res: int, thresh: float):
 def extract_frames(video: str, out_dir: str):
     os.makedirs(out_dir, exist_ok=True)
     subprocess.run([
-        "ffmpeg", "-i", video, "-qscale:v", "1", 
+        "ffmpeg", "-i", video,
+        "-pix_fmt", "rgba",           # Keep alpha channel if present
+        "-compression_level", "0",     # Lossless PNG (fastest, best quality)
         os.path.join(out_dir, "frame_%05d.png"), "-y"
     ], capture_output=True)
     return sorted([os.path.join(out_dir, f) for f in os.listdir(out_dir) if f.endswith('.png')])
