@@ -327,4 +327,16 @@ if __name__ == "__main__":
     load_birefnet()
     
     app = create_app()
-    app.launch(server_name="0.0.0.0", server_port=7860, inbrowser=True)
+    
+    # Try ports 7860-7869
+    import socket
+    for port in range(7860, 7870):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('0.0.0.0', port))
+            print(f"🌐 Using port {port}")
+            app.launch(server_name="0.0.0.0", server_port=port, inbrowser=True)
+            break
+        except OSError:
+            print(f"⚠️ Port {port} busy, trying next...")
+            continue
