@@ -22,10 +22,10 @@ ffmpeg -version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [WARNING] ffmpeg not found - video processing won't work
     echo To install: winget install ffmpeg
-    echo Or download from: https://ffmpeg.org/download.html
     echo.
+) else (
+    echo       ffmpeg OK
 )
-if %errorlevel% equ 0 echo       ffmpeg OK
 
 REM Create venv
 echo [3/4] Creating virtual environment...
@@ -38,9 +38,14 @@ if %errorlevel% neq 0 (
 
 REM Install dependencies
 echo [4/4] Installing dependencies...
-call venv\Scripts\activate
-pip install --upgrade pip
-pip install -r requirements.txt
+call venv\Scripts\activate.bat
+python -m pip install --upgrade pip
+
+REM Install torch first (important for torchvision compatibility)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+
+REM Install other dependencies
+pip install transformers gradio Pillow opencv-python huggingface-hub tqdm timm kornia einops "numpy<2"
 
 echo.
 echo ========================================
