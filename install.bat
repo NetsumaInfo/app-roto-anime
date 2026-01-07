@@ -5,14 +5,30 @@ echo ========================================
 echo.
 
 REM Check Python
+echo [1/4] Checking Python...
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ERROR] Python not found. Please install Python 3.10+
+    echo [ERROR] Python not found!
+    echo Download from: https://www.python.org/downloads/
+    echo IMPORTANT: Check "Add Python to PATH" during install!
     pause
     exit /b 1
 )
+echo       Python OK
 
-echo [1/3] Creating virtual environment...
+REM Check ffmpeg
+echo [2/4] Checking ffmpeg...
+ffmpeg -version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [WARNING] ffmpeg not found - video processing won't work
+    echo To install: winget install ffmpeg
+    echo Or download from: https://ffmpeg.org/download.html
+    echo.
+)
+if %errorlevel% equ 0 echo       ffmpeg OK
+
+REM Create venv
+echo [3/4] Creating virtual environment...
 python -m venv venv
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to create venv
@@ -20,22 +36,23 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo [2/3] Activating venv and installing dependencies...
+REM Install dependencies
+echo [4/4] Installing dependencies...
 call venv\Scripts\activate
 pip install --upgrade pip
 pip install -r requirements.txt
-
-echo [3/3] Checking for ToonOut weights...
-if not exist "weights\birefnet_finetuned_toonout.pth" (
-    echo.
-    echo [INFO] ToonOut weights not found.
-    echo Download from: https://huggingface.co/joelseytre/toonout
-    echo Place in: weights\birefnet_finetuned_toonout.pth
-)
 
 echo.
 echo ========================================
 echo   Installation complete!
 echo   Run 'run.bat' to start the app
 echo ========================================
+
+REM Check for ToonOut weights
+if not exist "weights\birefnet_finetuned_toonout.pth" (
+    echo.
+    echo [INFO] ToonOut weights not found (optional)
+    echo Download from: https://huggingface.co/joelseytre/toonout
+)
+
 pause
