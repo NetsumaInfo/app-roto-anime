@@ -29,11 +29,15 @@ if %errorlevel% neq 0 (
 
 REM Create venv
 echo [3/4] Creating virtual environment...
-python -m venv venv
-if %errorlevel% neq 0 (
-    echo [ERROR] Failed to create venv
-    pause
-    exit /b 1
+if exist venv (
+    echo       venv already exists, skipping...
+) else (
+    python -m venv venv
+    if %errorlevel% neq 0 (
+        echo [ERROR] Failed to create venv
+        pause
+        exit /b 1
+    )
 )
 
 REM Install dependencies
@@ -41,11 +45,17 @@ echo [4/4] Installing dependencies...
 call venv\Scripts\activate.bat
 python -m pip install --upgrade pip
 
-REM Install torch first (important for torchvision compatibility)
+echo Installing PyTorch...
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 
-REM Install other dependencies
-pip install transformers gradio Pillow opencv-python huggingface-hub tqdm timm kornia einops "numpy<2"
+echo Installing AI libraries...
+pip install transformers huggingface-hub timm kornia einops
+
+echo Installing utilities...
+pip install numpy"<2" Pillow opencv-python tqdm
+
+echo Installing Gradio interface...
+pip install gradio
 
 echo.
 echo ========================================

@@ -1,12 +1,19 @@
+# PyTorch (installer séparément avec CUDA)
 torch
 torchvision
+
+# Core
 numpy<2
-transformers
-gradio
 Pillow
 opencv-python
-huggingface-hub
 tqdm
+
+# AI/ML
+transformers
+huggingface-hub
 timm
 kornia
 einops
+
+# Interface
+gradio
