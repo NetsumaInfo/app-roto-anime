@@ -116,10 +116,13 @@ def process_image(img: Image.Image, model_name: str, res: int, thresh: float):
 
 def extract_frames(video: str, out_dir: str):
     os.makedirs(out_dir, exist_ok=True)
-    subprocess.run([
-        "ffmpeg", "-i", video, "-qscale:v", "1", 
-        os.path.join(out_dir, "frame_%05d.png"), "-y"
-    ], capture_output=True)
+    try:
+        subprocess.run([
+            "ffmpeg", "-i", video, "-qscale:v", "1", 
+            os.path.join(out_dir, "frame_%05d.png"), "-y"
+        ], capture_output=True, check=True)
+    except FileNotFoundError:
+        raise RuntimeError("❌ ffmpeg not found! Install: winget install ffmpeg")
     return sorted([os.path.join(out_dir, f) for f in os.listdir(out_dir) if f.endswith('.png')])
 
 def detect_type(path: str):
