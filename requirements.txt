@@ -7,3 +7,6 @@ Pillow
 opencv-python
 huggingface-hub
 tqdm
+timm
+kornia
+einops
