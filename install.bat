@@ -24,7 +24,6 @@ echo [2/3] Activating venv and installing dependencies...
 call venv\Scripts\activate
 pip install --upgrade pip
 pip install -r requirements.txt
-pip install gradio
 
 echo [3/3] Checking for ToonOut weights...
 if not exist "weights\birefnet_finetuned_toonout.pth" (
