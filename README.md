@@ -4,13 +4,19 @@ Remove backgrounds from images and videos using AI.
 
 ## Quick Start
 
-```bash
-# Windows
-run.bat
+### Windows (Recommended)
+1.  **Double-cliquez sur `install.bat`** : Crée l'environnement virtuel et installe les dépendances.
+2.  **Double-cliquez sur `run.bat`** : Lance l'application et ouvre le navigateur.
 
-# Manual
+### Manuel (Ligne de commande)
+```bash
+# 1. Installation
+python -m venv venv
+call venv\Scripts\activate
 pip install -r requirements.txt
 pip install gradio
+
+# 2. Lancement
 python app.py
 ```
 
