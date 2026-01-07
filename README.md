@@ -1,69 +1,65 @@
 # BiRefNet Background Removal
 
-Remove backgrounds from images and videos using AI.
+Suppression de fonds d'images et vidéos par IA.
 
-## Quick Start
+---
 
-### Windows (Recommended)
-1.  **Double-cliquez sur `install.bat`** : Crée l'environnement virtuel et installe les dépendances.
-2.  **Double-cliquez sur `run.bat`** : Lance l'application et ouvre le navigateur.
+## ⚠️ Prérequis (PC nu)
 
-### Manuel (Ligne de commande)
+### 1. Python 3.10+
+Télécharger et installer : **[python.org/downloads](https://www.python.org/downloads/)**
+
+> ⚡ **Important** : Cocher **"Add Python to PATH"** pendant l'installation !
+
+### 2. ffmpeg (pour les vidéos)
+Télécharger : **[ffmpeg.org/download](https://ffmpeg.org/download.html)**
+
+Ou avec winget :
 ```bash
-# 1. Installation
-python -m venv venv
-call venv\Scripts\activate
-pip install -r requirements.txt
-pip install gradio
-
-# 2. Lancement
-python app.py
+winget install ffmpeg
 ```
 
-Browser opens automatically at **http://localhost:7860**
+### 3. GPU NVIDIA (recommandé)
+Installer les drivers CUDA : **[developer.nvidia.com/cuda-downloads](https://developer.nvidia.com/cuda-downloads)**
 
 ---
 
-## Models
+## 🚀 Installation
 
-| Model | Optimized For | Accuracy |
-|-------|---------------|----------|
-| **BiRefNet** | Photos, portraits, products | State-of-the-art |
-| **ToonOut** | Anime, manga, illustrations | 99.5% |
+1. **Télécharger** ce projet (Code → Download ZIP)
+2. **Extraire** le ZIP
+3. **Double-clic sur `install.bat`**
+4. **Double-clic sur `run.bat`**
 
-## Parameters
+Le navigateur s'ouvre automatiquement sur **http://localhost:7860**
 
-| Parameter | Range | Description |
+---
+
+## 🎨 Modèles
+
+| Modèle | Optimisé pour | Précision |
+|--------|---------------|-----------|
+| **BiRefNet** | Photos, portraits | SOTA |
+| **ToonOut** | Anime, manga | 99.5% |
+
+## ⚙️ Paramètres
+
+| Paramètre | Plage | Description |
 |-----------|-------|-------------|
-| Resolution | 512-2048px | Higher = finer details, slower processing |
-| Threshold | 0.1-0.9 | Lower = more aggressive background removal |
-
-## Features
-
-- Process images & videos
-- Real-time before/after comparison
-- Batch frame extraction
-- ZIP download for video frames
-- Run/Stop/Pause controls
+| Resolution | 512-2048px | Plus haut = plus de détails, plus lent |
+| Threshold | 0.1-0.9 | Plus bas = suppression plus agressive |
 
 ---
 
-## ToonOut Weights
+## 📦 ToonOut (optionnel)
 
-Download from [HuggingFace](https://huggingface.co/joelseytre/toonout) → `weights/birefnet_finetuned_toonout.pth`
+Pour le modèle anime, télécharger les poids depuis [HuggingFace](https://huggingface.co/joelseytre/toonout) → `weights/birefnet_finetuned_toonout.pth`
 
-## Requirements
-
-- Python 3.10+
-- CUDA GPU (recommended)
-- ffmpeg (for video)
-
-## Links
+## 🔗 Liens
 
 - [BiRefNet GitHub](https://github.com/ZhengPeng7/BiRefNet)
-- [ToonOut GitHub](https://github.com/MatteoKartoon/BiRefNet)
 - [ToonOut Weights](https://huggingface.co/joelseytre/toonout)
 
-## License
+## 📄 License
 
 MIT
