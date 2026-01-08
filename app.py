@@ -120,6 +120,7 @@ def extract_frames(video: str, out_dir: str):
         "ffmpeg", "-i", video,
         "-pix_fmt", "rgba",           # Keep alpha channel if present
         "-compression_level", "0",     # Lossless PNG (fastest, best quality)
+        "-start_number", "0",          # Start frame numbering from 0
         os.path.join(out_dir, "frame_%05d.png"), "-y"
     ], capture_output=True)
     return sorted([os.path.join(out_dir, f) for f in os.listdir(out_dir) if f.endswith('.png')])
