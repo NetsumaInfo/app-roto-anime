@@ -144,6 +144,9 @@ def preview_media(file):
 # Processing state
 processing_state = {"running": False, "paused": False, "stop": False}
 
+# Frame storage for navigation
+frame_pairs = []  # List of (original, result) tuples for each frame
+
 def stop_processing():
     """Stop and reset to initial state"""
     processing_state["stop"] = True
@@ -174,11 +177,12 @@ def start_processing():
     )
 
 def process(file, model, res, thresh, progress=gr.Progress()):
-    global processing_state
+    global processing_state, frame_pairs
     processing_state = {"running": True, "paused": False, "stop": False}
+    frame_pairs = []  # Reset frame storage
     
     if not file:
-        return None, None, None, "", ""
+        return None, None, None, "", "", gr.update(visible=False), gr.update(visible=False)
     
     path = file.name if hasattr(file, 'name') else file
     ftype = detect_type(path)
@@ -195,10 +199,11 @@ def process(file, model, res, thresh, progress=gr.Progress()):
         
         result_checker = composite_on_checkerboard(result)
         slider_data = (np.array(orig), np.array(result_checker))
+        frame_pairs = [(np.array(orig), np.array(result_checker))]
         
         processing_state["running"] = False
         progress(1.0)
-        return slider_data, [np.array(result)], None, "✅ Done", str(session)
+        return slider_data, [np.array(result)], None, "✅ Done", str(session), gr.update(visible=False), gr.update(visible=False)
     
     elif ftype == "video":
         frames_in = session / "input"
@@ -209,16 +214,17 @@ def process(file, model, res, thresh, progress=gr.Progress()):
         frames = extract_frames(path, str(frames_in))
         total = len(frames)
         if not total:
-            return None, None, None, "❌ No frames", ""
+            return None, None, None, "❌ No frames", "", gr.update(visible=False), gr.update(visible=False)
         
         results = []
-        first_slider = None
+        originals = []
         
         for i, fp in enumerate(frames):
             # Check for stop
             if processing_state["stop"]:
                 processing_state["running"] = False
-                return first_slider, results, None, f"⏹️ Stopped at {i}/{total}", str(frames_out)
+                first_pair = frame_pairs[0] if frame_pairs else (None, None)
+                return first_pair, results, None, f"⏹️ Stopped at {i}/{total}", str(frames_out), gr.update(maximum=max(1, len(frame_pairs)), value=1, visible=len(frame_pairs) > 1), gr.update(value=f"Frame 1/{len(frame_pairs)}", visible=len(frame_pairs) > 1)
             
             # Check for pause
             import time
@@ -233,9 +239,9 @@ def process(file, model, res, thresh, progress=gr.Progress()):
             result.save(frames_out / f"frame_{i:05d}.png")
             results.append(np.array(result))
             
-            if i == 0:
-                result_checker = composite_on_checkerboard(result)
-                first_slider = (np.array(orig), np.array(result_checker))
+            # Store pair for navigation
+            result_checker = composite_on_checkerboard(result)
+            frame_pairs.append((np.array(orig), np.array(result_checker)))
         
         progress(0.98, desc="Creating ZIP...")
         zip_path = session / "frames.zip"
@@ -245,7 +251,20 @@ def process(file, model, res, thresh, progress=gr.Progress()):
         
         processing_state["running"] = False
         progress(1.0)
-        return first_slider, results, str(zip_path), f"✅ {total} frames", str(frames_out)
+        first_pair = frame_pairs[0] if frame_pairs else (None, None)
+        return first_pair, results, str(zip_path), f"✅ {total} frames", str(frames_out), gr.update(maximum=total, value=1, visible=total > 1), gr.update(value=f"Frame 1/{total}", visible=total > 1)
+
+def navigate_frame(frame_idx):
+    """Navigate to a specific frame and update the comparison slider"""
+    global frame_pairs
+    if not frame_pairs:
+        return None, ""
+    
+    idx = int(frame_idx) - 1  # Convert to 0-indexed
+    if 0 <= idx < len(frame_pairs):
+        pair = frame_pairs[idx]
+        return pair, f"Frame {idx + 1}/{len(frame_pairs)}"
+    return None, ""
 
 def create_app():
     with gr.Blocks(title="Background Removal") as app:
@@ -285,6 +304,9 @@ def create_app():
                 with gr.Tabs():
                     with gr.TabItem("⚖️ Compare"):
                         comparison_slider = gr.ImageSlider(label="Before / After", type="numpy")
+                        with gr.Row():
+                            frame_slider = gr.Slider(1, 1, 1, step=1, label="🎞️ Frame", visible=False, scale=4)
+                            frame_label = gr.Textbox(value="", label="", interactive=False, visible=False, scale=1, show_label=False)
                     
                     with gr.TabItem("🖼️ Gallery"):
                         gallery = gr.Gallery(label="Results", columns=4, height=400, object_fit="contain")
@@ -315,7 +337,13 @@ GPU: **{'✅ CUDA' if DEVICE == 'cuda' else '❌ CPU'}**
         process_btn.click(
             process,
             [file_input, model_select, res_slider, thresh_slider],
-            [comparison_slider, gallery, download_zip, status, output_folder]
+            [comparison_slider, gallery, download_zip, status, output_folder, frame_slider, frame_label]
+        )
+        
+        frame_slider.change(
+            navigate_frame,
+            [frame_slider],
+            [comparison_slider, frame_label]
         )
         
         stop_btn.click(stop_processing, outputs=[status])
