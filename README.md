@@ -34,7 +34,7 @@
 # 1. Cloner ou télécharger le projet
 git clone https://github.com/votre-repo/roto-anime.git
 
-# 2. Lancer l'installation (télécharge automatiquement ToonOut et pré-charge Lucida)
+# 2. Lancer l'installation (interactive : choisissez si vous voulez télécharger les modèles)
 install.bat
 
 # 3. Démarrer l'application
@@ -53,7 +53,7 @@ L'interface s'ouvre automatiquement sur **http://localhost:7860**
 | **ToonOut** | Anime, manga, illustrations | [HuggingFace](https://huggingface.co/joelseytre/toonout) |
 | **Lucida** | Anime haute qualité et général | [HuggingFace](https://huggingface.co/egeorcun/lucida) |
 
-> 💡 ToonOut et Lucida sont téléchargés automatiquement lors de l'installation
+> 💡 Durant l'installation, vous pouvez choisir de télécharger ou non ToonOut et Lucida (~885 MB chacun)
 
 ---
 
