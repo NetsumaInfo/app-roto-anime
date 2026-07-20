@@ -59,6 +59,12 @@ pip install gradio
 
 REM Download ToonOut weights
 echo.
+set "DL_TOONOUT=Y"
+set /p DL_TOONOUT="Do you want to download ToonOut weights (885 MB)? [Y/N, default: Y]: "
+if /i "%DL_TOONOUT%"=="n" set "DL_TOONOUT=N"
+if /i "%DL_TOONOUT%"=="no" set "DL_TOONOUT=N"
+
+if "%DL_TOONOUT%"=="N" goto skip_toonout
 echo [5/6] Downloading ToonOut weights (885 MB)...
 if not exist "weights" mkdir weights
 if not exist "weights\birefnet_finetuned_toonout.pth" (
@@ -73,9 +79,16 @@ if not exist "weights\birefnet_finetuned_toonout.pth" (
 ) else (
     echo       ToonOut weights already exist, skipping...
 )
+:skip_toonout
 
 REM Pre-download Lucida weights
 echo.
+set "DL_LUCIDA=Y"
+set /p DL_LUCIDA="Do you want to pre-download Lucida weights (885 MB)? [Y/N, default: Y]: "
+if /i "%DL_LUCIDA%"=="n" set "DL_LUCIDA=N"
+if /i "%DL_LUCIDA%"=="no" set "DL_LUCIDA=N"
+
+if "%DL_LUCIDA%"=="N" goto skip_lucida
 echo [6/6] Pre-downloading Lucida weights (885 MB)...
 python -c "from transformers import AutoModelForImageSegmentation; AutoModelForImageSegmentation.from_pretrained('egeorcun/lucida', trust_remote_code=True)"
 if %errorlevel% neq 0 (
@@ -83,6 +96,7 @@ if %errorlevel% neq 0 (
 ) else (
     echo       Lucida weights OK
 )
+:skip_lucida
 
 echo.
 echo ========================================
