@@ -11,7 +11,7 @@
 ## ✨ Fonctionnalités
 
 - 🖼️ **Images & Vidéos** — Traitement par lots avec extraction automatique des frames
-- 🎭 **2 modèles IA** — BiRefNet (photos) et ToonOut (anime/manga)
+- 🎭 **3 modèles IA** — BiRefNet (photos), ToonOut (anime/manga) et Lucida (anime haute qualité)
 - ⚖️ **Comparaison Before/After** — Slider interactif + navigation entre frames
 - 📦 **Export ZIP** — Téléchargement de toutes les frames traitées
 - 🎛️ **Paramètres ajustables** — Résolution et seuil de détection
@@ -34,7 +34,7 @@
 # 1. Cloner ou télécharger le projet
 git clone https://github.com/votre-repo/roto-anime.git
 
-# 2. Lancer l'installation (télécharge automatiquement les modèles)
+# 2. Lancer l'installation (télécharge automatiquement ToonOut et pré-charge Lucida)
 install.bat
 
 # 3. Démarrer l'application
@@ -51,8 +51,9 @@ L'interface s'ouvre automatiquement sur **http://localhost:7860**
 |--------|---------------|--------|
 | **BiRefNet** | Photos, portraits, produits | [GitHub](https://github.com/ZhengPeng7/BiRefNet) |
 | **ToonOut** | Anime, manga, illustrations | [HuggingFace](https://huggingface.co/joelseytre/toonout) |
+| **Lucida** | Anime haute qualité et général | [HuggingFace](https://huggingface.co/egeorcun/lucida) |
 
-> 💡 ToonOut est téléchargé automatiquement lors de l'installation (885 MB)
+> 💡 ToonOut et Lucida sont téléchargés automatiquement lors de l'installation
 
 ---
 
@@ -97,5 +98,6 @@ MIT — Libre d'utilisation et modification.
 
 <p align="center">
   <b>BiRefNet</b> par <a href="https://github.com/ZhengPeng7">ZhengPeng7</a> • 
-  <b>ToonOut</b> par <a href="https://huggingface.co/joelseytre">Kartoon AI</a>
+  <b>ToonOut</b> par <a href="https://huggingface.co/joelseytre">Kartoon AI</a> • 
+  <b>Lucida</b> par <a href="https://huggingface.co/egeorcun">Ege Orcun</a>
 </p>

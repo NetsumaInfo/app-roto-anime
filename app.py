@@ -37,7 +37,7 @@ OUTPUT_DIR = BASE_DIR / "output"
 OUTPUT_DIR.mkdir(exist_ok=True)
 TOONOUT_WEIGHTS = BASE_DIR / "weights" / "birefnet_finetuned_toonout.pth"
 
-models = {"birefnet": None, "toonout": None}
+models = {"birefnet": None, "toonout": None, "lucida": None}
 
 def load_birefnet():
     global models
@@ -68,8 +68,22 @@ def load_toonout():
         print("✅ ToonOut ready")
     return models["toonout"]
 
+def load_lucida():
+    global models
+    if models["lucida"] is None:
+        print("⏳ Loading Lucida...")
+        models["lucida"] = AutoModelForImageSegmentation.from_pretrained(
+            "egeorcun/lucida", trust_remote_code=True
+        ).to(DEVICE).eval()
+        print("✅ Lucida ready")
+    return models["lucida"]
+
 def get_model(name): 
-    return load_toonout() if "ToonOut" in name else load_birefnet()
+    if "ToonOut" in name:
+        return load_toonout()
+    elif "Lucida" in name:
+        return load_lucida()
+    return load_birefnet()
 
 def create_checkerboard(size, square_size=16):
     w, h = size
@@ -271,7 +285,7 @@ def create_app():
     with gr.Blocks(title="Background Removal") as app:
         
         gr.Markdown("# 🎨 Background Removal")
-        gr.Markdown("*BiRefNet for photos • ToonOut for anime*")
+        gr.Markdown("*BiRefNet for photos • ToonOut for anime • Lucida for high-quality anime/general*")
         
         with gr.Row():
             # Left Panel
@@ -285,8 +299,8 @@ def create_app():
                 
                 gr.Markdown("### ⚙️ Settings")
                 model_select = gr.Radio(
-                    ["BiRefNet (Photos)", "ToonOut (Anime)"],
-                    value="BiRefNet (Photos)",
+                    ["BiRefNet (Photos)", "ToonOut (Anime)", "Lucida (High-Quality Anime/General)"],
+                    value="Lucida (High-Quality Anime/General)",
                     label="Model"
                 )
                 res_slider = gr.Slider(512, 2048, 1024, step=256, label="Resolution")
@@ -321,6 +335,7 @@ def create_app():
 |-------|---------------|----------|
 | BiRefNet | Photos, portraits, products | SOTA |
 | ToonOut | Anime, manga, illustrations | 99.5% |
+| Lucida | High-quality anime/general subjects | SOTA |
 
 **Parameters**
 - **Resolution**: Higher = finer details, slower (512-2048px)
@@ -329,6 +344,7 @@ def create_app():
 **Links**
 - [BiRefNet GitHub](https://github.com/ZhengPeng7/BiRefNet)
 - [ToonOut Weights](https://huggingface.co/joelseytre/toonout)
+- [Lucida Model](https://huggingface.co/egeorcun/lucida)
 
 GPU: **{'✅ CUDA' if DEVICE == 'cuda' else '❌ CPU'}**
 """)

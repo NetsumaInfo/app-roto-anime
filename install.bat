@@ -5,7 +5,7 @@ echo ========================================
 echo.
 
 REM Check Python
-echo [1/5] Checking Python...
+echo [1/6] Checking Python...
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Python not found!
@@ -17,7 +17,7 @@ if %errorlevel% neq 0 (
 echo       Python OK
 
 REM Check ffmpeg
-echo [2/5] Checking ffmpeg...
+echo [2/6] Checking ffmpeg...
 ffmpeg -version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [WARNING] ffmpeg not found - video processing won't work
@@ -28,7 +28,7 @@ if %errorlevel% neq 0 (
 )
 
 REM Create venv
-echo [3/5] Creating virtual environment...
+echo [3/6] Creating virtual environment...
 if exist venv (
     echo       venv already exists, skipping...
 ) else (
@@ -41,7 +41,7 @@ if exist venv (
 )
 
 REM Install dependencies
-echo [4/5] Installing dependencies...
+echo [4/6] Installing dependencies...
 call venv\Scripts\activate.bat
 python -m pip install --upgrade pip
 
@@ -59,7 +59,7 @@ pip install gradio
 
 REM Download ToonOut weights
 echo.
-echo [5/5] Downloading ToonOut weights (885 MB)...
+echo [5/6] Downloading ToonOut weights (885 MB)...
 if not exist "weights" mkdir weights
 if not exist "weights\birefnet_finetuned_toonout.pth" (
     echo       Downloading from HuggingFace...
@@ -72,6 +72,16 @@ if not exist "weights\birefnet_finetuned_toonout.pth" (
     )
 ) else (
     echo       ToonOut weights already exist, skipping...
+)
+
+REM Pre-download Lucida weights
+echo.
+echo [6/6] Pre-downloading Lucida weights (885 MB)...
+python -c "from transformers import AutoModelForImageSegmentation; AutoModelForImageSegmentation.from_pretrained('egeorcun/lucida', trust_remote_code=True)"
+if %errorlevel% neq 0 (
+    echo [WARNING] Failed to pre-download Lucida weights
+) else (
+    echo       Lucida weights OK
 )
 
 echo.
